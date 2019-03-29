@@ -2,23 +2,18 @@ package com.dailymotion.android.player.sampleapp
 
 import android.content.pm.ActivityInfo
 import android.content.pm.ApplicationInfo
-import android.os.Build
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.EditText
 import android.widget.LinearLayout
-
-import com.dailymotion.android.player.sdk.PlayerWebView
 import com.dailymotion.android.player.sdk.events.*
 import com.dailymotion.websdksample.R
 import kotlinx.android.synthetic.main.new_screen_sample.*
-
-import java.util.HashMap
+import java.util.*
 
 class SampleActivity : AppCompatActivity(), View.OnClickListener {
 
@@ -29,11 +24,11 @@ class SampleActivity : AppCompatActivity(), View.OnClickListener {
         val params: LinearLayout.LayoutParams
 
         if (mFullscreen) {
-            toolbar!!.visibility = View.GONE
+            toolbar?.visibility = View.GONE
             requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
             params = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
         } else {
-            toolbar!!.visibility = View.VISIBLE
+            toolbar?.visibility = View.VISIBLE
             requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT
             params = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (215 * resources.displayMetrics.density).toInt())
         }
@@ -47,7 +42,6 @@ class SampleActivity : AppCompatActivity(), View.OnClickListener {
         } else {
             action_layout.visibility = View.VISIBLE
         }
-
         dm_player_web_view.setFullscreenButton(mFullscreen)
     }
 
@@ -59,10 +53,10 @@ class SampleActivity : AppCompatActivity(), View.OnClickListener {
         setSupportActionBar(toolbar)
 
         @Suppress("DEPRECATION")
-        if (toolbar != null) {
-            toolbar!!.visibility = View.VISIBLE
-            toolbar!!.setBackgroundColor(resources.getColor(android.R.color.background_dark))
-            toolbar!!.setTitleTextColor(resources.getColor(android.R.color.white))
+        toolbar?.let {
+            it.visibility = View.VISIBLE
+            it.setBackgroundColor(resources.getColor(android.R.color.background_dark))
+            it.setTitleTextColor(resources.getColor(android.R.color.white))
 
             val actionBar = supportActionBar
             actionBar?.title = getString(R.string.app_name)
@@ -91,57 +85,38 @@ class SampleActivity : AppCompatActivity(), View.OnClickListener {
             }
         }
 
-        val playButton = findViewById<View>(R.id.btnTogglePlay) as Button
-        playButton.setOnClickListener(this@SampleActivity)
-        val togglePlayButton = findViewById<View>(R.id.btnPlay) as Button
-        togglePlayButton.setOnClickListener(this@SampleActivity)
-        val pauseButton = findViewById<View>(R.id.btnPause) as Button
-        pauseButton.setOnClickListener(this@SampleActivity)
+        btnTogglePlay.setOnClickListener(this@SampleActivity)
+        btnPlay.setOnClickListener(this@SampleActivity)
+        btnPause.setOnClickListener(this@SampleActivity)
+        btnSeek.setOnClickListener(this@SampleActivity)
+        btnLoadVideo.setOnClickListener(this@SampleActivity)
+        btnSetQuality.setOnClickListener(this@SampleActivity)
+        btnSetSubtitle.setOnClickListener(this@SampleActivity)
+        btnToggleControls.setOnClickListener(this@SampleActivity)
+        btnShowControls.setOnClickListener(this@SampleActivity)
+        btnHideControls.setOnClickListener(this@SampleActivity)
+        btnSetVolume.setOnClickListener(this@SampleActivity)
 
-        val seekButton = findViewById<View>(R.id.btnSeek) as Button
-        seekButton.setOnClickListener(this@SampleActivity)
-        val loadVideoButton = findViewById<View>(R.id.btnLoadVideo) as Button
-        loadVideoButton.setOnClickListener(this@SampleActivity)
-        val setQualityButton = findViewById<View>(R.id.btnSetQuality) as Button
-        setQualityButton.setOnClickListener(this@SampleActivity)
-        val setSubtitleButton = findViewById<View>(R.id.btnSetSubtitle) as Button
-        setSubtitleButton.setOnClickListener(this@SampleActivity)
-
-        val toggleControlsButton = findViewById<View>(R.id.btnToggleControls) as Button
-        toggleControlsButton.setOnClickListener(this@SampleActivity)
-        val showControlsButton = findViewById<View>(R.id.btnShowControls) as Button
-        showControlsButton.setOnClickListener(this@SampleActivity)
-        val hideControlsButton = findViewById<View>(R.id.btnHideControls) as Button
-        hideControlsButton.setOnClickListener(this@SampleActivity)
-        val setVolumeButton = findViewById<Button>(R.id.btnSetVolume)
-        setVolumeButton.setOnClickListener(this@SampleActivity)
+        dm_player_web_view.playWhenReady = false
     }
 
     override fun onClick(v: View) {
-        if (v.id == R.id.btnPlay) {
-            dm_player_web_view.play()
-        } else if (v.id == R.id.btnTogglePlay) {
-            dm_player_web_view.togglePlay()
-        } else if (v.id == R.id.btnPause) {
-            dm_player_web_view.pause()
-        } else if (v.id == R.id.btnSeek) {
-            dm_player_web_view.seek(30.0)
-        } else if (v.id == R.id.btnLoadVideo) {
-            dm_player_web_view.load("x19b6ui")
-        } else if (v.id == R.id.btnSetQuality) {
-            dm_player_web_view.quality = "240"
-        } else if (v.id == R.id.btnSetSubtitle) {
-            dm_player_web_view.setSubtitle("en")
-        } else if (v.id == R.id.btnToggleControls) {
-            dm_player_web_view.toggleControls()
-        } else if (v.id == R.id.btnShowControls) {
-            dm_player_web_view.showControls(true)
-        } else if (v.id == R.id.btnHideControls) {
-            dm_player_web_view.showControls(false)
-        } else if (v.id == R.id.btnSetVolume) {
-            val text = (findViewById<View>(R.id.editTextVolume) as EditText).text.toString()
-            val volume = java.lang.Float.parseFloat(text)
-            dm_player_web_view.volume = volume
+        when(v) {
+            btnPlay -> dm_player_web_view.play()
+            btnTogglePlay -> dm_player_web_view.togglePlay()
+            btnPause -> dm_player_web_view.pause()
+            btnSeek -> dm_player_web_view.seek(30.0)
+            btnLoadVideo -> dm_player_web_view.load("x19b6ui")
+            btnSetQuality -> dm_player_web_view.quality = "240"
+            btnSetSubtitle -> dm_player_web_view.setSubtitle("en")
+            btnToggleControls -> dm_player_web_view.toggleControls()
+            btnShowControls -> dm_player_web_view.showControls(true)
+            btnHideControls -> dm_player_web_view.showControls(false)
+            btnSetVolume -> {
+                val text = (findViewById<View>(R.id.editTextVolume) as EditText).text.toString()
+                val volume = java.lang.Float.parseFloat(text)
+                dm_player_web_view.volume = volume
+            }
         }
     }
 
@@ -167,7 +142,6 @@ class SampleActivity : AppCompatActivity(), View.OnClickListener {
 
     override fun onResume() {
         super.onResume()
-
         dm_player_web_view.onResume()
     }
 
@@ -176,8 +150,8 @@ class SampleActivity : AppCompatActivity(), View.OnClickListener {
             return
         }
 
-        logText!!.append("\n" + text)
-        val scroll = logText!!.layout.getLineTop(logText!!.lineCount) - logText!!.height
+        logText.append("\n" + text)
+        val scroll = logText.layout.getLineTop(logText.lineCount) - logText.height
         if (scroll > 0) {
             logText!!.scrollTo(0, scroll)
         } else {
